@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # local
+    "accounts.apps.AccountsConfig"
 ]
 
 MIDDLEWARE = [
@@ -52,6 +54,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "digikala.urls"
+AUTH_USER_MODEL = "accounts.User"
 
 TEMPLATES = [
     {
