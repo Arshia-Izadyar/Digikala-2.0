@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Provider, Product, Category, Review
+from .models import Provider, Product, Category, Review, ProductImages, ReviewImage
 
 
 @admin.register(Provider)
@@ -14,7 +14,19 @@ class ProviderAdmin(admin.ModelAdmin):
     )
     ordering = ("joined",)
 
-
+@admin.register(ProductImages)
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'image')
+    fields = ('product', "image")
+    
+@admin.register(ReviewImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'image')
+    fields = ('review', "image")
+    
+    
+    
+    
 @admin.register(Product)
 class ProviderAdmin(admin.ModelAdmin):
     list_display = ('id', "pid", "title", "price", )

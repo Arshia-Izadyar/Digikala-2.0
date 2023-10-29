@@ -49,9 +49,9 @@ class Product(models.Model):
         return self.title
     
 
-class ProductImage(models.Model):
+class ProductImages(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='product_images/')
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
@@ -66,7 +66,7 @@ class Review(models.Model):
         return f"{self.product} - {self.user}"
     
     
-class ProductImage(models.Model):
+class ReviewImage(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='review_images/')
 

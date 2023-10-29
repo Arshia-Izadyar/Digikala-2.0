@@ -1,19 +1,31 @@
 from typing import Any
-from django.db import models
-from django.db.models import Avg
-from django.http import Http404, HttpRequest, HttpResponse, HttpResponseForbidden
+from django.db.models import Avg, Q
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import FormView, ListView, View, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-
-from .forms import ProviderForm
-from .models import Category, Product
+from .forms import ProviderForm, ReviewForm
+from .models import Category, Product, ReviewImage
 
 # using a simple view because thats all i need
 class CategoryView(View):
     def get(self, request, *args, **kwargs):
         c = Category.objects.all()   
         return render(request, "products/categories.html", {"categories":c})
+
+class ViewPerCategory(ListView):
+    
+    template_name = "products/product_category.html"    
+    context_object_name = "products"
+    
+    def get_queryset(self):
+        slug = self.kwargs["category"]
+        search_query = self.request.GET.get('search')
+        if search_query:
+            return Product.objects.filter(Q(title__icontains=search_query) & Q(category__slug=slug))
+        return Product.objects.filter(category__slug=slug)
+    
     
 
 class HomeView(ListView):
@@ -39,16 +51,49 @@ class HomeView(ListView):
         return ctx
 
 
-class ProductDetails(View):
+class ProductDetails(DetailView):
     template_name = "products/product_detail.html"
     context_object_name = "product"
+    model = Product
+    slug_field = "pid"
+    slug_url_kwarg = "pid"
     
-    def get(self, request, *args, **kwargs):
+    def get_queryset(self):
+        # queryset = super().get_queryset()
         pid = self.kwargs["pid"]
-        product = Product.objects.get(pid=pid)
-        
-        return render(request, self.template_name, {self.context_object_name:product})
+        product = Product.objects.filter(pid=pid)
+        return product
     
+    
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        qs = self.get_queryset()
+        p = ctx["product"]
+        ctx["review_form"] = ReviewForm()
+        ctx["reviews"] = p.reviews.all()
+        ctx["avg_rate"] = round(sum([i.rating for i in ctx["reviews"]])/len(ctx["reviews"]), 2)
+        return ctx
+
+
+class CreateReview(LoginRequiredMixin, FormView):
+    
+    def post(self, request, *args, **kwargs) :
+        form = ReviewForm(data=request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = self.request.user
+            review.product = Product.objects.get(pid=self.kwargs["pid"])
+            review.save()
+            
+            images = request.FILES.getlist("images")
+            for image in images:
+                ReviewImage.objects.create(review=review, image=image)
+                
+            return redirect(request.POST.get("next", "/"))
+        return redirect(request.POST.get("next", "/"))
+    
+
+
 class CreateProvider(FormView):
     template_name = "products/create_provider.html"
     success_url = "/"
@@ -62,6 +107,7 @@ class CreateProvider(FormView):
     
     def form_valid(self, form: Any) -> HttpResponse:
         provider = form.save(commit=False)
-        provider.User = self.request.user
+        provider.user = self.request.user
         provider.save()
         return redirect(self.success_url)
+

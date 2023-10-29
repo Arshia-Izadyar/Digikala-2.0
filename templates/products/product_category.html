@@ -2,21 +2,14 @@
 
 
 {% block title %}
-    Home
+    products
 {% endblock title %}
 
 
 {% block body %}
     
     <form method="get">
-        <select name="category">
-            <option value="" selected>All Categories</option>
-            
-            {% for c in categories %}
-                <option value="{{c.id}}" selected>{{c.title}}</option>
-            {% endfor %}
-                
-        </select>
+    
         <input type="text" name="search" placeholder="Search products">
         <button type="submit">Apply Filters</button>
     </form>

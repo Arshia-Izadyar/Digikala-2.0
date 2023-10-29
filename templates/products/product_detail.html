@@ -7,6 +7,14 @@
 {% block body %}
 <h1>{{product.title}}</h1>
  <h3> {{product.price}}</h3><br>
+
+{% if product.images.all %}
+  {% for image in product.images.all %}
+    <img src="{{image.image.url}}" style="height: 150px;width:100px">
+  {% endfor %}
+{% endif %}
+
+<h3> rating:->{{avg_rate}} </h3>
  <h2> description </h2>
  <p>{{product.description}}</p>
 <h3> category :=: {{product.category}} </h3>
@@ -17,4 +25,48 @@
     <li>{{ provider }} </li>
   {% endfor %}
 </ul>
+
+<h2>Reviews</h2>
+{% for review in reviews %}
+
+  {% if review.images.all %}
+    {% for image in review.images.all %}
+      <img src="{{image.image.url}}" style="height: 150px;width:100px">
+    {% endfor %}
+  {% endif %}
+
+    
+    {% if review.is_anon %}
+      <p>Anon user - rated:{{review.rating}}- at: {{review.created_date}} :</p>
+    {% else %}
+      <p>{{review.user}} - rated:{{review.rating}}- at: {{review.created_date}} :</p>
+    {% endif %}
+      
+    
+    {% if review.recommend %}
+      <h4>recommended</h4>
+    {% else %}
+      <h4>not recommended</h4>
+    {% endif %}
+    <p>{{review.review}}</p>
+{% endfor %}
+  <h2>
+    Add a review
+  </h2>
+  <form method="post" enctype="multipart/form-data" action="{% url 'product:review' product.pid %}">
+    {% csrf_token %}
+    {{review_form.as_p}}
+    <input type="hidden" name="product" value="{{product}}">
+    
+    <input type="hidden" name="next" value="{{request.path}}">
+    <input type="submit"  value="comment">
+  </form>
+
+  {% if review_form.errors %}
+  <div class="alert alert-danger">
+      <p>Please correct the following errors:</p>
+      {{ review_form.errors }}
+  </div>
+{% endif %}
+  
 {% endblock body %}

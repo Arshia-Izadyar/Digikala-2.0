@@ -7,7 +7,7 @@ categories list
 {% block body %}
 
 {% for category in categories %}
-<h3>{{category}} </h3> <br>
+<h3><a href="{% url 'product:products_category' category.slug %}">{{category}} </a> </h3> <br>
 {% endfor %}
 
 
