@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  detail
+{% endblock title %}
+
+{% block body %}
+<h1>{{product.title}}</h1>
+ <h3> {{product.price}}</h3><br>
+ <h2> description </h2>
+ <p>{{product.description}}</p>
+<h3> category :=: {{product.category}} </h3>
+
+<h4>Providers:</h4>
+<ul>
+  {% for provider in product.provider.all %}
+    <li>{{ provider }} </li>
+  {% endfor %}
+</ul>
+{% endblock body %}

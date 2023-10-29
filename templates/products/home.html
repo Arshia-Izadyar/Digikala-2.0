@@ -1,0 +1,39 @@
+{% extends 'base.html' %}   
+
+
+{% block title %}
+    Home
+{% endblock title %}
+
+
+{% block body %}
+    
+    <form method="get">
+        <select name="category">
+            <option value="" selected>All Categories</option>
+            
+            {% for c in categories %}
+                <option value="{{c.id}}" selected>{{c.title}}</option>
+            {% endfor %}
+                
+        </select>
+        <input type="text" name="search" placeholder="Search products">
+        <button type="submit">Apply Filters</button>
+    </form>
+
+    
+    {% for product in products %}
+        <h3>{{product.title}} - {{product.price}}$</h3>
+        
+        {% if product.in_digikala_inventory %}
+            <p>in in digikala inventory</p>
+        {% endif %}
+        {% if product.in_provider_inventory %}
+            <p>in provider inventory</p>
+        {% endif %}
+            
+    {% endfor %}
+        
+    
+{% endblock body %}
+    
