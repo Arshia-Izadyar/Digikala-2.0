@@ -11,7 +11,7 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = User
 
-    list_display = ("email", "is_staff", "is_active", "phone_number", "user_type")
+    list_display = ("email","username", "is_staff", "is_active", "phone_number", "user_type")
     list_filter = (
         "is_staff",
         "is_active",
@@ -24,7 +24,7 @@ class CustomUserAdmin(UserAdmin):
     ordering = ("username",)
 
     fieldsets = (
-        (None, {"fields": ("email", "password", "user_type", "birth_date", "phone_number")}),
+        (None, {"fields": ("email", "password", "user_type", "birth_date", "phone_number", "firstname", "lastname")}),
         ("Permissions", {"fields": ("is_staff", "is_active", "is_superuser", "groups", "user_permissions")}),
         ("Dates", {"fields": ("last_login", "date_joined")}),
     )

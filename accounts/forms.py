@@ -1,7 +1,10 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
-from .models import User, Address
+from .models import Address
+
+User = get_user_model()
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -27,3 +30,10 @@ class AddressCreationForm(forms.ModelForm):
         model = Address
         fields = ("address", "zip_code", "city", "phone_number", "receiver_name")
 
+
+class CustomUserSignInForm(forms.ModelForm):
+    password2 = forms.CharField(required=True)
+    class Meta():
+        
+        model = User
+        fields = ( "firstname", "lastname", "phone_number","email","password","password2" )
