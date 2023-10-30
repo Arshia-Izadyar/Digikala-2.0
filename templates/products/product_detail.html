@@ -25,6 +25,21 @@
     <li>{{ provider }} </li>
   {% endfor %}
 </ul>
+<form method="post" action="{% url 'product:bookmark' product.pid %}">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{request.path}}">
+  <input type="submit"  value="Bookmark">
+</form>
+<form method="post" action="{% url 'basket:add' %}">
+  {% csrf_token %}
+
+  <input type="hidden" name="next" value="{{request.path}}">
+  <input type="hidden" name="product" value="{{product.id}}">
+  <input type="number" name="quantity">
+  <input type="submit"  value="add to basket">
+</form>
+
+
 
 <h2>Reviews</h2>
 {% for review in reviews %}

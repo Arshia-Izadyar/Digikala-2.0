@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  basket    
+{% endblock title %}
+
+{% block body %}
+    <h1>Users basket</h1>
+    <br>
+    <h3>total -> {{total}}</h3>
+    <h3>basket for user -> {{basket.user}}</h3>
+    <h1>basket products...</h1>
+    {% for line in lines %}
+      <h3>{{line.product.title}} {{line.product.price}}$ x{ {{line.quantity}} }</h3>
+    {% endfor %}
+      
+{% endblock body %}

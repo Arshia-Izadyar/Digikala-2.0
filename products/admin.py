@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Provider, Product, Category, Review, ProductImages, ReviewImage
+from .models import Provider, Product, Category, Review, ProductImages, ReviewImage, Bookmark
 
 
 @admin.register(Provider)
@@ -23,10 +23,12 @@ class ProductImageAdmin(admin.ModelAdmin):
 class ProductImageAdmin(admin.ModelAdmin):
     list_display = ('id', 'image')
     fields = ('review', "image")
-    
-    
-    
-    
+
+@admin.register(Bookmark)
+class BookmarkAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product')
+    fields = ('user', "product")
+     
 @admin.register(Product)
 class ProviderAdmin(admin.ModelAdmin):
     list_display = ('id', "pid", "title", "price", )

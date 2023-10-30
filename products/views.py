@@ -4,9 +4,9 @@ from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import FormView, ListView, View, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.db import IntegrityError
 from .forms import ProviderForm, ReviewForm
-from .models import Category, Product, ReviewImage
+from .models import Category, Product, ReviewImage, Bookmark
 
 # using a simple view because thats all i need
 class CategoryView(View):
@@ -26,6 +26,19 @@ class ViewPerCategory(ListView):
             return Product.objects.filter(Q(title__icontains=search_query) & Q(category__slug=slug))
         return Product.objects.filter(category__slug=slug)
     
+    
+class AddBookmark(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        p = self.kwargs["pid"]
+        product = Product.objects.get(pid=p)
+        try:
+            Bookmark.objects.create(user=self.request.user,product=product)
+            return redirect(self.request.POST.get("next", "/"))
+        except IntegrityError:
+            bookmark = Bookmark.objects.filter(Q(product=product) & Q(user= self.request.user)).first()
+            bookmark.delete()
+            return redirect(self.request.POST.get("next", "/"))
+            
     
 
 class HomeView(ListView):

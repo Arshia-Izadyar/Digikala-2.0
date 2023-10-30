@@ -13,19 +13,19 @@
 
 <nav class="navbar">
         <ul class="nav-list">
-            <li class="nav-item"><a href="#">Home</a></li>
+            <li class="nav-item"><a href="{% url 'product:home' %}">Home</a></li>
 
             {% if user.is_authenticated %}
                 <li class="nav-item"><a href="#">profile</a></li>
 
-                <li class="nav-item"><a href="#">Logout</a></li>
+                <li class="nav-item"><a href="{% url 'accounts:logout' %}">Logout</a></li>
 
 
             {% else %}
-                <li class="nav-item"><a href="#">Login</a></li>
+                <li class="nav-item"><a href="{% url 'accounts:login' %}">Login</a></li>
                 <li class="nav-item"><a href="#">Sign Up</a></li>
             {% endif %}
-                <li class="nav-item"><a href="#">Basket</a></li>
+                <li class="nav-item"><a href="{% url 'basket:show' %}">Basket</a></li>
 
         </ul>
     </nav>

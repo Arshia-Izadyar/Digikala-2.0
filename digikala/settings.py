@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # local
     "accounts.apps.AccountsConfig",
     "products.apps.ProductsConfig",
+    "basket.apps.BasketConfig",
     
 ]
 

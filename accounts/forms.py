@@ -14,6 +14,11 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
         fields = UserChangeForm.Meta.fields
+        
+class UserLoginForm(forms.Form):
+    email_phone = forms.CharField(max_length=50, min_length=6, required=True)
+    password = forms.CharField(max_length=20, widget=forms.PasswordInput)
+    
 
 
 

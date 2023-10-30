@@ -70,3 +70,8 @@ class ReviewImage(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='review_images/')
 
+class Bookmark(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="bookmarks")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookmarks")
+    class Meta:
+        unique_together = ("product", "user")
