@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "products.apps.ProductsConfig",
     "basket.apps.BasketConfig",
+    "transaction.apps.TransactionConfig",
     
 ]
 

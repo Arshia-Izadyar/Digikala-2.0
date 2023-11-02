@@ -1,17 +1,17 @@
 import re
 from typing import Any
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django import http
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.views.generic import FormView, View
+from django.views.generic import FormView, View, TemplateView
 
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
 
 from .models import User
 from .forms import UserLoginForm, CustomUserSignInForm
 from basket.views import basket_merge_after_login
+from transaction.models import Transactions, Wallet
 
 EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 PHONE_REGEX = r'^0[1-9][0-9]{9}$'
@@ -73,11 +73,29 @@ class CreateUser(FormView):
             login(self.request, user)
             return redirect(request.POST.get("next", "/"))
         return render(request, self.template_name, {"form":form})
-        
-            
-       
 
 class LogoutUser(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         logout(self.request)
-        return redirect("/")
+        response = HttpResponseRedirect("/")
+        response.set_cookie('basket_id', '', max_age=0)
+        return response
+    
+class Profile(LoginRequiredMixin, TemplateView):
+    template_name = "accounts/profile.html"
+    
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        user = User.objects.prefetch_related("addresses", "bookmarks", "basket").get(pk=self.request.user.pk) # TODO: add wallet and score
+        ctx["user"] = user    
+        ctx["address"] = user.addresses.all()
+        ctx["bookmarks"] = user.bookmarks.all()
+        ctx["last_products"] = user.basket.filter(is_paid=True) # last products user bought
+        ctx["score"] = Transactions.calc_user_score(user.email)
+        Wallet.update_wallet(user)
+        w, _ = Wallet.objects.get_or_create(user=user)
+        ctx["wallet"] = w
+        
+        
+        return ctx
+        

@@ -46,7 +46,7 @@ class Basket(models.Model):
             basket = cls.objects.create()
         else:
             try:
-                basket = cls.objects.filter(Q(pk=basket_id) & Q(is_paid=False)).first()
+                basket = cls.objects.get(Q(pk=basket_id) & Q(is_paid=False))
             except cls.DoesNotExist:
                 basket = None
         return basket

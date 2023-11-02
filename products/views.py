@@ -84,7 +84,10 @@ class ProductDetails(DetailView):
         p = ctx["product"]
         ctx["review_form"] = ReviewForm()
         ctx["reviews"] = p.reviews.all()
-        ctx["avg_rate"] = round(sum([i.rating for i in ctx["reviews"]])/len(ctx["reviews"]), 2)
+        if len(ctx["reviews"]) > 0:
+            ctx["avg_rate"] = round(sum([i.rating for i in ctx["reviews"]])/len(ctx["reviews"]), 2)
+        else:
+            ctx["avg_rate"] = 0.0
         return ctx
 
 

@@ -31,25 +31,19 @@ class ShowBasket(TemplateView):
     template_name = "basket/basket_view.html"
     
     def get(self, request, *args, **kwargs):
-        response = render(request, "basket/basket_view.html")
+        
         if not hasattr(self, "basket_object"):
+            
             id = self.request.COOKIES.get("basket_id", None)
             self.basket_object = Basket.get_basket(id)
 
             if not self.basket_object.user_validate(self.request.user):
                 raise Http404
-            # FIXME:fix basket
-            
-            # if self.request.user.is_authenticated:
-            #     authenticated_basket = Basket.objects.filter(user=request.user, is_paid=False).exists()
-            #     if authenticated_basket:
-            #         authenticated_basket = Basket.objects.filter(user=request.user, is_paid=False).first()
-            #         for line in self.basket_object.lines.all():
-            #             authenticated_basket.add_to_basket(line.product, line.quantity)
-            #             self.basket_object.delete()
-            #             self.basket_object = authenticated_basket
-            #             response.set_cookie("basket_id", authenticated_basket.pk)
-        return super().get(request, *args, **kwargs)
+        
+        context = self.get_context_data()
+        response = render(request, "basket/basket_view.html", context)
+        response.set_cookie("basket_id", self.basket_object.pk)
+        return response
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         ctx = super().get_context_data(**kwargs)

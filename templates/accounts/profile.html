@@ -1,0 +1,39 @@
+{% extends 'base.html' %}   
+
+{% block title  %}
+  Profile
+{% endblock title %}
+
+{% load custom_format %}
+{% block body %}
+
+
+  <h1>{{user.firstname}}'s profile </h1>
+
+    <b>hello {{user.firstname}} {{user.lastname}}</b>
+    <h3>Balance: {{wallet.total|c_format}}</h3>
+    <p>score:{{score}}</p>
+    <p>Joined at {{user.date_joined.date}}</p>
+    <p>score : {{user.score}}</p>
+    <p>born at {{user.birth_date}}</p>
+    <p> phone: {{user.phone_number}} </p>
+    <h3>Bookmark</h3>
+    {% for bookmark in bookmarks %}
+        <a href="{% url 'product:details' bookmark.product.pid %}">{{bookmark.product}}</a><br>
+    {% endfor %}
+    <h3> user address </h3>
+    {% for addr in address %}
+        <p>address : {{addr.address}}</p>
+        <p> city: {{addr.city}} - zipCode: {{addr.zip_code}} </p>
+        <p> phone number: {{addr.phone_number}}</p>
+        <p>receiver_name: {{addr.receiver_name}}</p>
+    {% endfor %}
+    <h3>products you bought</h3>
+    {% for prod in last_products %}
+      <h4>products in basket {{prod.created_at.date}}</h4>
+      {% for p in prod.lines.all %}
+        <p><a href="{% url 'product:details' p.product.pid %}">{{p.product}} </a> - {{p.quantity}}</p>
+      {% endfor %}
+        
+    {% endfor %}
+{% endblock body %}
