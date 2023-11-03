@@ -95,7 +95,5 @@ class Profile(LoginRequiredMixin, TemplateView):
         Wallet.update_wallet(user)
         w, _ = Wallet.objects.get_or_create(user=user)
         ctx["wallet"] = w
-        
-        
         return ctx
         
