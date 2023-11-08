@@ -13,5 +13,7 @@
     {% for line in lines %}
       <h3>{{line.product.title}} {{line.product.price}}$ x{ {{line.quantity}} }</h3>
     {% endfor %}
-      
+    <form method="get" action="{% url 'shipping:create' basket_id=basket.pk %}">
+      <input type="submit" value="Proceed to cheackout">
+    </form>
 {% endblock body %}
