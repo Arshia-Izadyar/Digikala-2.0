@@ -1,15 +1,15 @@
 import re
-from typing import Any
-from django import http
-from django.http import HttpResponseRedirect
+from django.forms.models import BaseModelForm
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.views.generic import FormView, View, TemplateView
+from django.urls import reverse
+from django.views.generic import FormView, View, TemplateView, CreateView, ListView, UpdateView, DeleteView
 
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import User
-from .forms import UserLoginForm, CustomUserSignInForm
+from .models import User, Address 
+from .forms import UserLoginForm, CustomUserSignInForm, AddressCreationForm
 from basket.views import basket_merge_after_login
 from transaction.models import Transactions, Wallet
 
@@ -86,7 +86,7 @@ class Profile(LoginRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        user = User.objects.prefetch_related("addresses", "bookmarks", "basket").get(pk=self.request.user.pk) # TODO: add wallet and score
+        user = User.objects.prefetch_related("addresses", "bookmarks", "basket").get(pk=self.request.user.pk) 
         ctx["user"] = user    
         ctx["address"] = user.addresses.all()
         ctx["bookmarks"] = user.bookmarks.all()
@@ -96,4 +96,54 @@ class Profile(LoginRequiredMixin, TemplateView):
         w, _ = Wallet.objects.get_or_create(user=user)
         ctx["wallet"] = w
         return ctx
-        
+
+class CreateAddress(CreateView):
+    form_class = AddressCreationForm
+    context_object_name = "form"
+    template_name = "accounts/address.html"
+    success_url = "/accounts/profile"
+    model = Address
+    
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        addr = form.save(commit=False)
+        addr.user = self.request.user
+        addr.save()
+        return HttpResponseRedirect(self.success_url)
+    
+
+class ListAddress(ListView):
+    template_name = "accounts/address_list.html"
+    context_object_name = "addresses"
+    
+    def get_queryset(self):
+        queryset = Address.objects.filter(user=self.request.user)
+        return queryset
+    
+class UpdateAddress(UpdateView):
+    form_class = AddressCreationForm
+    template_name = "accounts/address_update.html"
+    context_object_name = "addresses"
+    pk_url_kwarg = "id"
+    success_url = "/accounts/profile"
+    
+    
+    def get_queryset(self):
+        id = self.kwargs["id"]
+        queryset = Address.objects.filter(pk=id) 
+        return queryset
+    
+
+class DeleteAddress(DeleteView):
+    pk_url_kwarg = "id"
+    success_url = "/accounts/profile"
+    
+    def get_queryset(self):
+        id = self.kwargs["id"]
+        queryset = Address.objects.filter(pk=id) 
+        return queryset
+    
+    def get(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.delete()
+        return HttpResponseRedirect(self.success_url)

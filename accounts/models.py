@@ -56,3 +56,5 @@ class Address(models.Model):
     phone_number = models.CharField(max_length=12)
     receiver_name = models.CharField(max_length=50)
     
+    def __str__(self):
+        return f"|receiver:{self.receiver_name}- addr: {self.address} zipCode: {self.zip_code}"
