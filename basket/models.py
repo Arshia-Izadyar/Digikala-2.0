@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from products.models import Product
+from shipping.models import ShippingItem
 User = get_user_model()
 
 
@@ -50,6 +51,10 @@ class Basket(models.Model):
             except cls.DoesNotExist:
                 basket = None
         return basket
+    
+    def add_to_shipping(self, shipping):
+        for line in self.lines.all():
+            ShippingItem.objects.create(shipping=shipping, product=line.product, quantity=line.quantity)
     
     def __str__(self):
         return f"{self.user} - {self.created_at} - {self.is_paid}"
