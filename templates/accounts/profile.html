@@ -17,6 +17,8 @@
     <p>score : {{user.score}}</p>
     <p>born at {{user.birth_date}}</p>
     <p> phone: {{user.phone_number}} </p>
+    <h1>manage addresses</h1>
+    <a href="{% url 'accounts:address-list' %}">address list</a>
     <h3>Bookmark</h3>
     {% for bookmark in bookmarks %}
         <a href="{% url 'product:details' bookmark.product.pid %}">{{bookmark.product}}</a><br>

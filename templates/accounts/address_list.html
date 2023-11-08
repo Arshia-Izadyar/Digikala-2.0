@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}
+    addr list
+{% endblock title %}
+
+{% block body %}
+  
+  {% for addr in addresses %}
+    <p> address {{addr.address}} </p>
+    <p> zipCode {{addr.zip_code}} </p>
+    <p> city {{addr.city}} </p>
+    <p> receiver_name {{addr.receiver_name}} </p>
+    <p> phone_number {{addr.phone_number}} </p>
+    <button>
+      <a href="{% url 'accounts:address-update' addr.pk %}">update</a>
+    </button>
+    <button>
+      <a href="{% url 'accounts:address-delete' addr.pk %}">delete</a>
+    </button>
+  {% endfor %}
+  <br><a href="{% url 'accounts:profile' %}">go back</a>
+    
+{% endblock body %}
