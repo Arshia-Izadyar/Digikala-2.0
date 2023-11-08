@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}
+Shipping preview
+{% endblock title %}
+
+
+{% block body %}
+<h1>Shipping detail and traking</h1>
+
+<h2> Products </h2>
+{% for product in products %}
+<p> <b>Product:</b> {{product.product.title}} <b>Price</b> {{product.product.price}} quantity : {{product.quantity}} </p>
+<p> Sipping Date: {{product.shipping.sending_date}} </p>
+<p> Shipping Address {{product.shipping.user_address}} </p>
+<br>
+{% endfor %}
+{% endblock body %} 
