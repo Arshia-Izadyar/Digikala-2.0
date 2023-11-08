@@ -1,0 +1,21 @@
+{% extends 'Base.html' %}
+{% block title %}
+Payment confirm
+{% endblock title %}
+
+{% block body %}
+
+<h2> Deatails </h3>
+    <br>
+    <p><b>Amount: </b> {{transaction.amount}}</p>
+    <p><b>User: </b> {{transaction.user}}</p>
+
+    <p><b>Type: </b> {{transaction.get_type_display}}</p>
+    <p><b>Basket: </b> {{transaction.basket.is_paid}}</p>
+    <br>
+<p>  i dont have payment gateway. so we skip the payment in gateway  </p>
+
+<p>  we assume that the program claimed th transaction from gateway  </p>
+<a href="{% url 'shipping:list' %}"> See shipping status</a>
+
+{% endblock body %}

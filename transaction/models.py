@@ -38,6 +38,7 @@ class Transactions(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     invoice_number = models.UUIDField(default=uuid4, verbose_name=_("Invoice number"))
     basket = models.ForeignKey(Basket, on_delete=models.SET("deleted basket"), related_name="transactions",null=True,blank=True, verbose_name=_("Basket"))
+    status = models.PositiveSmallIntegerField(choices=transaction_status, default=PENDING)
     
     def __str__(self):
         return f"{self.user} - {self.type} - {self.amount}"

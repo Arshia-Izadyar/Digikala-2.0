@@ -1,7 +1,25 @@
 {% extends 'base.html' %}
 
 
+{% block title %}
+  
+transaction
+{% endblock title %}
 
+{% block body %}
+  
 <h1>transaction</h1>
+<h2>items</h2>
+<h3>hello {{basket.user}}</h3>
 
+{% for item in lines %}
+    <p>{{item.product}} - {{item.product.price}}  ({{item.quantity}})</p>
+{% endfor %}
+
+<h2>total:{{total}}</h2>
+
+<a href="{% url 'transactions:confirm' transaction.invoice_number %}">confirm</a>
+    
+
+{% endblock body %}
 
