@@ -1,6 +1,8 @@
 from typing import Any
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from django.db.models import Avg, Q
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import FormView, ListView, View, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,6 +12,13 @@ from .models import Category, Product, ReviewImage, Bookmark
 
 # using a simple view because thats all i need
 class CategoryView(View):
+    
+        
+    @method_decorator(cache_page(60 * 15))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    
     def get(self, request, *args, **kwargs):
         c = Category.objects.all()   
         return render(request, "products/categories.html", {"categories":c})
@@ -70,6 +79,11 @@ class ProductDetails(DetailView):
     model = Product
     slug_field = "pid"
     slug_url_kwarg = "pid"
+    
+    @method_decorator(cache_page(60 * 15))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
     
     def get_queryset(self):
         # queryset = super().get_queryset()
